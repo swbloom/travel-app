@@ -12,23 +12,42 @@ export function getToken() {
 	return localStorage.getItem('token');
 }
 
+export function removeToken() {
+	localStorage.removeItem('token');
+}
+
 export function verifyToken(token) {
-	return axios.get(`${config.API_URL}/api/`, {
-		params: {
-			token
-		}
+	return new Promise((resolve, reject) => {
+		axios.get(`${config.API_URL}/api/`, {
+			params: {
+				token
+			}
+		}).then((res) => {
+			if (res.status === 200) {
+				resolve(res);				
+			} else {
+			}
+		}).catch((err) => {
+			console.log('oops');
+		});
 	});
+	
 }
 
 export function authenticate(name, password) {
-		return axios.post(`${config.API_URL}/api/users/authenticate`, {
-			name,
-			password 
-		})
+		return new Promise((resolve, reject) => {
+			axios.post(`${config.API_URL}/api/authenticate`, {
+				name,
+				password 
+			}).then((res) => {
+				if (res.data.token) {
+					setLocalStorage({token: res.data.token});
+					resolve({success: true});
+				} else {
+					reject({errorMsg: res.data.message});
+				}
+			});
+		});
+
 }
 
-export function login(token) {
-	if (token) {
-		setLocalStorage({token});
-	} 
-}

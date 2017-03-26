@@ -3,15 +3,30 @@ require('./css/style.css');
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { createStore } from 'redux'
-import { Provider } from 'react-redux'
+import { Provider, connect } from 'react-redux'
 import rootReducer from './reducers'
 import Authentication from './containers/Authentication.js';
-import { authenticate, login, getToken, verifyToken } from './services/authentication.js';
+import { authenticate, getToken, verifyToken } from './services/authentication.js';
+import { login } from './actions';
 
 let store = createStore(
 	rootReducer, 
 	window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
 );
+
+const mapStateToProps = (state) => {
+	return state;
+}
+
+const mapDispatchToProps = (dispatch) => {
+	return {
+		login: () => {
+			dispatch(login());
+		}
+	}
+}
+
+
 
 class App extends React.Component {
 	render() {
@@ -25,11 +40,18 @@ class App extends React.Component {
 		const token = getToken();
 		verifyToken(token)
 			.then((res) => {
-				console.log(res.data);
+				this.props.login();
 			});
 	}
 }
 
+const AppContainer = connect(
+	mapStateToProps, 
+	mapDispatchToProps
+)(App);
+
+
+
 ReactDOM.render(<Provider store={store}>
-	<App />
+	<AppContainer />
 </Provider>, document.getElementById('app'));

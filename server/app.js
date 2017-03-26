@@ -29,30 +29,8 @@ app.get('/', (req, res) => {
 	res.send('Server Running');
 });
 
-apiRoutes.use((req, res, next) => {
-	const token = req.body.token || req.query.token || req.headers['x-access-token'];
-
-	if (token) {
-		jwt.verify(token, app.get('superSecret'), (err, decoded) => {
-			if (err) {
-				return res.json({success: false, message: 'Failed to authenticate token.'});
-			} else {
-				req.decoded = decoded;
-				next();
-			}
-
-		});
-	} else {
-		return res.status(403).send({
-			success: false,
-			message: 'No token provided.'
-		});
-	}
-});
-
-apiRoutes.post('/users/authenticate', (req, res) => {
+apiRoutes.post('/authenticate', (req, res) => {
 	const { name, password } = req.body;
-	console.log(name, password);
 	User.findOne({ 
 		name,
 		password 
@@ -82,6 +60,31 @@ apiRoutes.post('/users/authenticate', (req, res) => {
 		}
 	});
 });
+
+
+apiRoutes.use((req, res, next) => {
+	const token = req.body.token || req.query.token || req.headers['x-access-token'];
+
+	if (req.path === '/authenticate') {
+		next();
+	} else if (token) {
+		jwt.verify(token, app.get('superSecret'), (err, decoded) => {
+			if (err) {
+				return res.json({success: false, message: 'Failed to authenticate token.'});
+			} else {
+				req.decoded = decoded;
+				next();
+			}
+
+		});
+	} else {
+		return res.status(403).send({
+			success: false,
+			message: 'No token provided.'
+		});
+	}
+});
+
 
 apiRoutes.get('/users/create', (req, res) => {
 	const { name, password } = req.query;
