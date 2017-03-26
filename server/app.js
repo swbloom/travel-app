@@ -65,7 +65,7 @@ apiRoutes.post('/authenticate', (req, res) => {
 apiRoutes.use((req, res, next) => {
 	const token = req.body.token || req.query.token || req.headers['x-access-token'];
 
-	if (req.path === '/authenticate') {
+	if (req.path === '/authenticate' || req.path === '/users/create') {
 		next();
 	} else if (token) {
 		jwt.verify(token, app.get('superSecret'), (err, decoded) => {
@@ -86,16 +86,34 @@ apiRoutes.use((req, res, next) => {
 });
 
 
-apiRoutes.get('/users/create', (req, res) => {
-	const { name, password } = req.query;
-	const user = new User({ name, password });
+apiRoutes.post('/users/create', (req, res) => {
+	const { name, password } = req.body;
 
-	user.save((err) => {
-		if (err) throw err;
+	if (name === "" || password === "") {
+		res.json({success: false, message: 'Please provide a username and password'});
+	} else {
+		User.findOne({ 
+			name,
+			password 
+		}, (err, user) => {
+			if (err) throw err;
 
-		console.log('User saved successfully.');
-		res.json({ success: true });
-	});
+			if (user) {
+				res.json({
+					success: false,
+					message: 'User already exists in database.'
+				});
+			} else {
+				const user = new User({ name, password });
+				const token = jwt.sign(user, app.get('superSecret'));
+				user.save((err, doc) => {
+					if (err) throw err;
+
+					res.json({ success: true, user: doc, token });
+				});
+			}
+		}); 
+	}
 });
 
 apiRoutes.get('/', (req, res) => {

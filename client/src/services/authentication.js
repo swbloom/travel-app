@@ -3,7 +3,7 @@ import config from '../../config.js';
 import store from '../store';
 import { login, logout } from '../actions'
 
-const setLocalStorage = (options) => {
+export function setLocalStorage (options) {
 	Object.keys(options).map(key => {
 		localStorage.setItem(key, options[key]);
 	});
@@ -28,7 +28,7 @@ export function verifyToken(token) {
 				resolve(res);
 			}				
 		}).catch((err) => {
-			console.log('oops');
+			console.log(err);
 		});
 	});
 }
