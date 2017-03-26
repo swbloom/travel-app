@@ -1,5 +1,5 @@
 import React from 'react';
-import { authenticate, logout, removeToken } from '../services/authentication.js';
+import { authenticate, logoutUser } from '../services/authentication.js';
 
 class Login extends React.Component {
 	constructor() {
@@ -9,7 +9,6 @@ class Login extends React.Component {
 			password: '',
 			errorMsg: ''
 		}
-		this.logout = this.logout.bind(this);
 		this.handleChange = this.handleChange.bind(this);
 		this.handleSubmit = this.handleSubmit.bind(this);
 	}
@@ -21,16 +20,7 @@ class Login extends React.Component {
 	handleSubmit(e) {
 		e.preventDefault();
 		authenticate(this.state.username, this.state.password)
-			.then((res) => {
-				if (res.success) {
-					this.props.login();
-				}
-			})
 			.catch((err) => this.setState({errorMessage}));
-	}
-	logout() {
-		removeToken();
-		this.props.logout();
 	}
 	render() {
 		return (
@@ -41,7 +31,7 @@ class Login extends React.Component {
 					<button>Login</button>
 					<p>The user is currently {this.props.logged_in ? "logged in" : "logged out"}</p>
 				</form>
-				<button onClick={this.logout}>Logout</button>
+				<button onClick={logoutUser}>Logout</button>
 			</div>
 
 		)

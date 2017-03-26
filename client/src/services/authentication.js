@@ -1,6 +1,7 @@
 import axios from 'axios';
 import config from '../../config.js';
-import { store } from 'redux';
+import store from '../store';
+import { login, logout } from '../actions'
 
 const setLocalStorage = (options) => {
 	Object.keys(options).map(key => {
@@ -24,14 +25,17 @@ export function verifyToken(token) {
 			}
 		}).then((res) => {
 			if (res.status === 200) {
-				resolve(res);				
-			} else {
-			}
+				resolve(res);
+			}				
 		}).catch((err) => {
 			console.log('oops');
 		});
 	});
-	
+}
+
+export function logoutUser() {
+	localStorage.removeItem('token');
+	store.dispatch(logout());
 }
 
 export function authenticate(name, password) {
@@ -42,6 +46,7 @@ export function authenticate(name, password) {
 			}).then((res) => {
 				if (res.data.token) {
 					setLocalStorage({token: res.data.token});
+					store.dispatch(login());
 					resolve({success: true});
 				} else {
 					reject({errorMsg: res.data.message});

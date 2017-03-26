@@ -4,15 +4,10 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { createStore } from 'redux'
 import { Provider, connect } from 'react-redux'
-import rootReducer from './reducers'
 import Authentication from './containers/Authentication.js';
 import { authenticate, getToken, verifyToken } from './services/authentication.js';
 import { login } from './actions';
-
-let store = createStore(
-	rootReducer, 
-	window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
-);
+import store from './store'
 
 const mapStateToProps = (state) => {
 	return state;
