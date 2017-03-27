@@ -5,7 +5,6 @@ import { login } from '../actions';
 import { setLocalStorage } from './authentication';
 
 export function createUser(name, password) {
-	console.log(name, password);
 	return new Promise((resolve, reject) => {
 		axios.post(`${config.API_URL}/api/users/create`, {
 			name,

@@ -93,8 +93,7 @@ apiRoutes.post('/users/create', (req, res) => {
 		res.json({success: false, message: 'Please provide a username and password'});
 	} else {
 		User.findOne({ 
-			name,
-			password 
+			name
 		}, (err, user) => {
 			if (err) throw err;
 

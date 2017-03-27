@@ -8,44 +8,7 @@ import Authentication from './containers/Authentication.js';
 import { authenticate, getToken, verifyToken } from './services/authentication.js';
 import { login } from './actions';
 import store from './store'
-
-const mapStateToProps = (state) => {
-	return state;
-}
-
-const mapDispatchToProps = (dispatch) => {
-	return {
-		login: () => {
-			dispatch(login());
-		}
-	}
-}
-
-
-
-class App extends React.Component {
-	render() {
-		return (
-			<div>
-				<Authentication />
-			</div>
-		)
-	}
-	componentDidMount() {
-		const token = getToken();
-		verifyToken(token)
-			.then((res) => {
-				this.props.login();
-			});
-	}
-}
-
-const AppContainer = connect(
-	mapStateToProps, 
-	mapDispatchToProps
-)(App);
-
-
+import AppContainer from './containers/AppContainer.js';
 
 ReactDOM.render(<Provider store={store}>
 	<AppContainer />

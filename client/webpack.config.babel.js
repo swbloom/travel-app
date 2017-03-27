@@ -23,6 +23,9 @@ export default env => {
 				{test: /\.css$/, use: ifProd(extract({ fallback: 'style-loader', use: 'css-loader' }), ['style-loader', 'css-loader'])}
 			]
 		},
+		devServer: {
+			historyApiFallback: true
+		},
 		plugins: [
 			new ExtractTextPlugin('style.css')
 		]

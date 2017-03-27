@@ -25,7 +25,6 @@ class Login extends React.Component {
 		e.preventDefault();
 		createUser(this.state.createUsername, this.state.createPassword)
 			.catch((err) => this.setState({errorMessage: err.errorMessage}));	
-		
 	}
 	login(e) {
 		e.preventDefault();
